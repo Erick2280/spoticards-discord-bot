@@ -1,106 +1,127 @@
 import { SpotifyService } from './spotify-service';
+
 import { Game } from './game';
-import { Card } from './card';
+import { ClassicGame } from './game-types/classic-game';
+// import { AdvancedGame } from './game-types/advanced-game';
+// import { CustomDeckGame } from './game-types/custom-deck-game';
+
+import { generateRandomInteger } from './utils';
+
+type User = {
+    userName: string,
+    identifier: number
+};
+
+export type GameOptions = {
+    playlistId?: string,
+    rounds: number
+};
+
+export enum GameType { Classic, Advanced, CustomDeck }
 
 export class Server {
     runningGames: Game[];
+    users: User[];
     spotifyService: SpotifyService;
 
     constructor() {
         this.runningGames = [];
+        this.users = [];
         this.spotifyService = new SpotifyService();
     }
 
-    startGame(admin, gameType) {
-        let identifier: number;
-        while (identifier == null || this.runningGames.find(game => game.identifier === identifier)) {
-            identifier = Math.floor(Math.random() * 65536);
+    startGame(adminUserName: string, gameType: GameType, gameOptions: GameOptions) {
+
+        if (this.findGameIdentifierByUser(adminUserName) != null) {
+            throw new Error('UserAlreadyInGame');
         }
-        // const newGame = new Game(identifier, admin, cardSet, rounds, this.spotifyService);
-        // this.runningGames.push(newGame);
-        // return newGame;
+
+        let identifier: number;
+        while (identifier == null || this.findGameByIdentifier(identifier)) {
+            identifier = generateRandomInteger(1, 65535);
+        }
+
+        if (gameType === GameType.Classic) {
+            if (!('playlistId' in gameOptions)) {
+                throw new Error('MissingPlaylistId');
+            }
+            const newGame = new ClassicGame(identifier, adminUserName, gameOptions.rounds, this.spotifyService, gameOptions.playlistId);
+            this.runningGames.push(newGame);
+            return newGame;
+        }
     }
 
-    stopGame(identifier) {
-        const gameIndex = this.runningGames.findIndex(game => game.identifier = identifier);
-        if (gameIndex !== -1) {
-            this.runningGames.splice(gameIndex, 1);
-        } else {
+    stopGame(identifier: number, adminUserName: string) {
+        const gameIndex = this.findGameIndexByIdentifier(identifier);
+        if (gameIndex === -1) {
             throw new Error('GameNotFound');
         }
-    }
-
-    createCardEmbed(card: Card, index: number) {
-        const minutes = Math.floor(card.duration / 60);
-        const seconds = Math.round(card.duration - minutes * 60);
-        let leadingZero = '';
-
-        if (seconds.toString().length === 1) {
-            leadingZero = '0';
+        if (this.runningGames[gameIndex].adminUserName !== adminUserName) {
+            throw new Error('PlayerIsNotGameAdmin');
         }
 
-        const embed = {
-            title: card.name,
-            description: `${card.artist}\n${card.album}`,
-            thumbnail: {
-                url: card.imageUrl,
-            },
-            fields: [
-                {
-                    name: 'Popularidade',
-                    value: card.popularity,
-                    inline: true,
-                },
-                {
-                    name: 'Danceabilidade',
-                    value: card.danceability,
-                    inline: true,
-                },
-                {
-                    name: 'Sonoridade',
-                    value: card.loudness,
-                    inline: true,
-                },
-                {
-                    name: 'Proporção de fala',
-                    value: card.speechiness,
-                    inline: true,
-                },
-                {
-                    name: 'Acústica',
-                    value: card.acousticness,
-                    inline: true,
-                },
-                {
-                    name: 'Instrumentalidade',
-                    value: card.instrumentalness,
-                    inline: true,
-                },
-                {
-                    name: 'Vivacidade',
-                    value: card.liveness,
-                    inline: true,
-                },
-                {
-                    name: 'Valência',
-                    value: card.valence,
-                    inline: true,
-                },
-                {
-                    name: 'Tempo',
-                    value: card.tempo,
-                    inline: true,
-                },
-                {
-                    name: 'Duração',
-                    value: `${minutes}:${leadingZero}${seconds} (${card.duration}s)`,
-                    inline: true,
-                }
-            ],
-            footer: {
-                text: `Card nº ${index} do deck`
-            }
-        };
-        return embed;
+        for (const player of this.runningGames[gameIndex].players) {
+            this.removeUserFromUsersLists(player.userName);
+        }
+        this.runningGames.splice(gameIndex, 1);
+
+        // TODO: Finalizar um jogo após um determinado tempo sem execução.
     }
+
+    joinGame(userName: string, identifier: number) {
+        const targetGame = this.findGameByIdentifier(identifier);
+
+        if (targetGame == null) {
+            throw new Error('GameNotFound');
+        }
+
+        if (this.findGameIdentifierByUser(userName) != null) {
+            throw new Error('PlayerAlreadyInAGame');
+        }
+
+        targetGame.addPlayer(userName);
+        this.addUserOnUsersList(userName, identifier);
+        return targetGame;
+    }
+
+    unjoinGame(userName) {
+        const identifier = this.findGameIdentifierByUser(userName);
+        if (identifier == null ) {
+            throw new Error('UserNotFound');
+        }
+        const targetGame = this.findGameByIdentifier(identifier);
+        targetGame.removePlayer(userName);
+        this.removeUserFromUsersLists(userName);
+    }
+
+    findGameIdentifierByUser(userName: string) {
+        const foundUser = this.users.find(user => user.userName === userName);
+        if (foundUser == null) {
+            return null;
+        }
+        return foundUser.identifier;
+    }
+
+    findGameByIdentifier(identifier: number) {
+        return this.runningGames.find(game => game.identifier === identifier);
+    }
+
+    findGameIndexByIdentifier(identifier: number) {
+        return this.runningGames.findIndex(game => game.identifier === identifier);
+    }
+
+    private addUserOnUsersList(userName: string, identifier: number) {
+        this.users.push({
+            userName,
+            identifier
+        });
+    }
+
+    private removeUserFromUsersLists(userName: string) {
+        const userIndex = this.users.findIndex(user => user.userName === userName);
+        if (userIndex !== -1) {
+            this.users.splice(userIndex, 1);
+        }
+    }
+
 }

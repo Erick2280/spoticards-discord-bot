@@ -1,73 +1,89 @@
 import { SpotifyService } from './spotify-service';
-import { Card } from './card';
 
-enum GameTypes { Classic, Hidden, CustomDeck }
-type User = {
-    user: string,
+export type Player = {
+    userName: string,
     points: number,
     deck: Card[],
 };
-type TableSpace = {
-    user: User,
+export type TableSpace = {
+    player: Player,
     card: Card
+};
+export type Criterion = {
+    name: string,
+    variableName: string,
+    variableType: 'string' | 'number',
+    variableComparator: '>'| '<'
+};
+
+export type Card = {
+    id: string;
+    imageUrl: string;
+
+    name: string;
+    artist: string;
+    album: string;
+    popularity: number;
+    danceability: number;
+    energy: number;
+    loudness: number;
+    speechiness: number;
+    acousticness: number;
+    instrumentalness: number;
+    liveness: number;
+    valence: number;
+    tempo: number;
+    duration: number;
+
+    used: boolean;
 };
 
 export class Game {
     identifier: number;
-    admin: string;
-    users: User[];
-    cardSet: string;
+    adminUserName: string;
+    players: Player[];
     round: number;
     rounds: number;
+    gameIsRunning: boolean;
     table: TableSpace[];
     spotifyService: SpotifyService;
 
-    constructor(identifier: number, admin: string, cardSet: string, rounds: number, spotifyService: SpotifyService) {
+    constructor(identifier: number, adminUserName: string, rounds: number, spotifyService: SpotifyService) {
         this.identifier = identifier;
-        this.admin = admin;
-        this.users = [];
-        this.joinUser(admin);
+        this.adminUserName = adminUserName;
+        this.players = [];
         this.round = 0;
-        this.cardSet = cardSet;
         this.rounds = rounds;
+        this.gameIsRunning = false;
         this.spotifyService = spotifyService;
-
-        // TODO: Checar se a playlist pode comportar o número de rounds
     }
 
-    joinUser(user) {
-        const newUser = {
-            user,
+    addPlayer(userName: string) {
+        if (this.gameIsRunning) {
+            throw new Error('CannotChangePlayersWhileGameIsRunning');
+        }
+        if (this.players.find(player => player.userName === userName) != null) {
+            throw new Error('PlayerAlreadyInThisGame');
+        }
+        const newPlayer = {
+            userName,
             points: 0,
             deck: [],
         };
-        this.users.push(newUser);
+        this.players.push(newPlayer);
     }
 
-    distributeDeck() {
-        if (this.round === 0) {
-            // montar o deck
-            // ir para o round 1
-        } else {
-            throw new Error('DeckAlreadyDistributed');
+    removePlayer(userName) {
+        if (this.gameIsRunning) {
+            throw new Error('CannotChangePlayersWhileGameIsRunning');
         }
+
+        const playerIndex = this.players.findIndex(player => player.userName === userName);
+        if (playerIndex !== -1) {
+            throw new Error('PlayerIsNotFound');
+        }
+
+        this.players.splice(playerIndex, 1);
     }
 
-    runRound() {
-        // limpa a mesa
-        // define um critério
-    }
-
-    finishRound() {
-        // checa se todo mundo já jogou
-        // calcula o maior ponto (e se empatar?)
-        // finaliza o round e vai pro próximo, ou termina o jogo
-    }
-
-    disposeCard(user, card) {
-        // verifica se o usuário pode disposar a carta
-        // se sim, coloca null no deck dele e joga a carta na mesa.
-
-        this.finishRound();
-    }
 }

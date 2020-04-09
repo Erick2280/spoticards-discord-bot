@@ -1,7 +1,11 @@
 import { environment } from '../temp/environment';
-import { Card } from './card';
+import { Card } from './game';
 import SpotifyWebApi from 'spotify-web-api-node';
 
+export type PlaylistDeck = {
+    deckTitle: string,
+    cards: Card[]
+};
 export class SpotifyService {
 
     spotifyApi: SpotifyWebApi;
@@ -22,7 +26,7 @@ export class SpotifyService {
         }
     }
 
-    async getDataFromPlaylist(playlistId: string, amountOfCards: number = null) {
+    async getDeckFromPlaylist(playlistId: string, amountOfCards: number = null) {
         let playlist;
         let audioFeatures;
         const trackIds = [];
@@ -46,7 +50,7 @@ export class SpotifyService {
             audioFeatures = await this.spotifyApi.getAudioFeaturesForTracks(trackIds);
 
             for (const item of playlist.body.tracks.items) {
-                const audioFeature = audioFeatures.body['audio_features'].find(x => x.id = item.track.id);
+                const audioFeature = audioFeatures.body['audio_features'].find(x => x.id === item.track.id);
 
                 cards.push({
                     id: item.track.id,
@@ -64,17 +68,18 @@ export class SpotifyService {
                     liveness: audioFeature.liveness,
                     valence: audioFeature.valence,
                     tempo: audioFeature.tempo,
-                    duration: item.track.duration_ms / 1000
+                    duration: item.track.duration_ms / 1000,
+                    used: true
                 });
             }
         } catch (error) {
             throw error;
         }
-
-        return {
+        const playlistDeck: PlaylistDeck = {
             deckTitle: playlist.body.name,
             cards
         };
+        return playlistDeck;
     }
 
 }
