@@ -4,6 +4,8 @@ import { Game } from './game';
 import { ClassicGame } from './game-types/classic-game';
 // import { AdvancedGame } from './game-types/advanced-game';
 // import { CustomDeckGame } from './game-types/custom-deck-game';
+// import { SelectACriteriaGame } from './game-types/select-a-criteria-game';
+// import { RightInTheMiddleGame } from './game-types/right-in-the-middle-game';
 
 import { generateRandomInteger } from './utils';
 

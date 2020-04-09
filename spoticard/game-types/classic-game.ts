@@ -87,6 +87,7 @@ export class ClassicGame extends Game {
         super(identifier, adminUserName, rounds, spotifyService);
         this.playlistId = playlistId;
         this.deckIsBeingMounted = false;
+        this.addPlayer(adminUserName);
     }
 
     async distributeDeck() {
