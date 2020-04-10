@@ -47,6 +47,7 @@ export class Game {
     gameIsRunning: boolean;
     table: TableSpace[];
     spotifyService: SpotifyService;
+    gameType = 'n/a';
 
     constructor(identifier: number, adminUserName: string, rounds: number, spotifyService: SpotifyService) {
         this.identifier = identifier;

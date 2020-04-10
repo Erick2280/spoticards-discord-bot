@@ -2,7 +2,7 @@ import { SpotifyService } from './spotify-service';
 
 import { Game } from './game';
 import { ClassicGame } from './game-types/classic-game';
-// import { AdvancedGame } from './game-types/advanced-game';
+import { ThoroughGame } from './game-types/thorough-game';
 // import { CustomDeckGame } from './game-types/custom-deck-game';
 // import { SelectACriteriaGame } from './game-types/select-a-criteria-game';
 // import { RightInTheMiddleGame } from './game-types/right-in-the-middle-game';
@@ -19,7 +19,7 @@ export type GameOptions = {
     rounds: number
 };
 
-export enum GameType { Classic, Advanced, CustomDeck }
+export enum GameType { Classic, Thorough, CustomDeck }
 
 export class Server {
     runningGames: Game[];
@@ -48,6 +48,15 @@ export class Server {
                 throw new Error('MissingPlaylistId');
             }
             const newGame = new ClassicGame(identifier, adminUserName, gameOptions.rounds, this.spotifyService, gameOptions.playlistId);
+            this.runningGames.push(newGame);
+            this.addUserOnUsersList(adminUserName, newGame.identifier);
+            return newGame;
+        }
+        if (gameType === GameType.Thorough) {
+            if (!('playlistId' in gameOptions)) {
+                throw new Error('MissingPlaylistId');
+            }
+            const newGame = new ThoroughGame(identifier, adminUserName, gameOptions.rounds, this.spotifyService, gameOptions.playlistId);
             this.runningGames.push(newGame);
             this.addUserOnUsersList(adminUserName, newGame.identifier);
             return newGame;

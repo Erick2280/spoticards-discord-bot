@@ -44,33 +44,37 @@ export class SpotifyService {
             }
 
             for (const item of playlist.body.tracks.items) {
-                trackIds.push(item.track.id);
+                if (!item.is_local) {
+                    trackIds.push(item.track.id);
+                }
             }
 
             audioFeatures = await this.spotifyApi.getAudioFeaturesForTracks(trackIds);
 
             for (const item of playlist.body.tracks.items) {
-                const audioFeature = audioFeatures.body['audio_features'].find(x => x.id === item.track.id);
+                if (!item.is_local) {
+                    const audioFeature = audioFeatures.body['audio_features'].find(x => x.id === item.track.id);
 
-                cards.push({
-                    id: item.track.id,
-                    imageUrl: item.track.album.images[0].url,
-                    name: item.track.name,
-                    artist: item.track.artists[0].name,
-                    album: item.track.album.name,
-                    popularity: item.track.popularity,
-                    danceability: audioFeature.danceability,
-                    energy: audioFeature.energy,
-                    loudness: audioFeature.loudness,
-                    speechiness: audioFeature.speechiness,
-                    acousticness: audioFeature.acousticness,
-                    instrumentalness: audioFeature.instrumentalness,
-                    liveness: audioFeature.liveness,
-                    valence: audioFeature.valence,
-                    tempo: audioFeature.tempo,
-                    duration: item.track.duration_ms / 1000,
-                    used: false
-                });
+                    cards.push({
+                        id: item.track.id,
+                        imageUrl: item.track.album.images[0].url,
+                        name: item.track.name,
+                        artist: item.track.artists[0].name,
+                        album: item.track.album.name,
+                        popularity: item.track.popularity,
+                        danceability: audioFeature.danceability,
+                        energy: audioFeature.energy,
+                        loudness: audioFeature.loudness,
+                        speechiness: audioFeature.speechiness,
+                        acousticness: audioFeature.acousticness,
+                        instrumentalness: audioFeature.instrumentalness,
+                        liveness: audioFeature.liveness,
+                        valence: audioFeature.valence,
+                        tempo: audioFeature.tempo,
+                        duration: item.track.duration_ms / 1000,
+                        used: false
+                    });
+                }
             }
         } catch (error) {
             throw error;

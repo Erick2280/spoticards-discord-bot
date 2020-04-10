@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { Server } from '../../spoticards/server';
 import * as interfaceUtils from '../interface-utils';
 import { ClassicGame } from '../../spoticards/game-types/classic-game';
+import { environment } from '../../temp/environment';
 
 export const data = {
     name: 'throw',
@@ -27,12 +28,13 @@ export function execute(message: Message, args: string[], server: Server, client
             message.channel.send({embed: interfaceUtils.createCardEmbed(roundFinishData.table[0].card)});
             message.channel.send(interfaceUtils.createGameTable(targetGame, roundFinishData, client));
             message.channel.send(interfaceUtils.createPlayersList(targetGame, true, client));
-            message.channel.send(interfaceUtils.createRoundData(targetGame));
 
             if (!targetGame.gameIsRunning) {
                 message.channel.send('E o jogo chega ao fim!');
                 message.channel.send(interfaceUtils.createWinningMessage(targetGame, client));
-                message.channel.send('Se quiser jogar uma nova rodada, mantendo as pontuações, é só redistribuir as cartas com **.redistribute**. Caso queira mudar a playlist, basta usar **.changeplaylist <playlist>**.');
+                message.channel.send(`Se quiser jogar uma nova rodada, mantendo as pontuações, é só redistribuir as cartas com **${environment.botPrefix}redistribute**. Caso queira mudar a playlist, basta usar **${environment.botPrefix}changeplaylist <playlist>**.`);
+            } else {
+                message.channel.send(interfaceUtils.createRoundData(targetGame));
             }
         }
     }

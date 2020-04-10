@@ -8,6 +8,7 @@ export class ClassicGame extends Game {
     globalDeck: PlaylistDeck;
     deckIsBeingMounted: boolean;
     selectedCriterion: number;
+    gameTypeName = 'Clássico';
 
     readonly criteria: Criterion[] = [{
             name: 'Música com maior nome',
@@ -64,7 +65,7 @@ export class ClassicGame extends Game {
             variableComparator: '>'
         },
         {
-            name: 'Música menos longa',
+            name: 'Música mais curta',
             variableName: 'duration',
             variableType: 'number',
             variableComparator: '<'
@@ -95,9 +96,9 @@ export class ClassicGame extends Game {
             throw new Error('DeckAlreadyDistributed');
         }
 
-        if (this.players.length < 2) {
-            throw new Error('NotEnoughPlayersToStartGame');
-        }
+        // if (this.players.length < 2) {
+        //     throw new Error('NotEnoughPlayersToStartGame');
+        // }
 
         this.deckIsBeingMounted = true;
 

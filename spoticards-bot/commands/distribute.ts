@@ -1,7 +1,8 @@
 import { Message } from 'discord.js';
-import { Server, GameType, GameOptions } from '../../spoticards/server';
+import { Server } from '../../spoticards/server';
 import * as interfaceUtils from '../interface-utils';
 import { ClassicGame } from '../../spoticards/game-types/classic-game';
+import { environment } from '../../temp/environment';
 
 export const data = {
     name: 'distribute',
@@ -31,7 +32,7 @@ export async function execute(message: Message, args: string[], server: Server, 
             }
         }
 
-        message.channel.send('Tudo pronto! Vamos começar a primeira rodada. Jogue uma carta usando **.throw <número da carta>**');
+        message.channel.send(`Tudo pronto! Vamos começar a primeira rodada. Jogue uma carta usando **${environment.botPrefix}throw <número da carta>**`);
         message.channel.send(interfaceUtils.createRoundData(targetGame));
     }
 }

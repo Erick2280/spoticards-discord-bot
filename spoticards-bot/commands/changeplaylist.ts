@@ -11,6 +11,7 @@ export const data = {
 };
 
 export function execute(message: Message, args: string[], server: Server, client) {
+    // TODO: change global para mudar configs do jogo
     const playlistId = interfaceUtils.extractSpotifyPlaylistId(args[0]);
     const identifier = server.findGameIdentifierByUser(message.author.id);
     if (identifier == null) {

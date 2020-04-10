@@ -4,6 +4,7 @@ export const data = {
     name: 'eval',
     description: '[RESTRITO] Avalia o argumento no JavaScript.',
     args: true,
+    usage: '<comando em JS>',
     restricted: true
 };
 

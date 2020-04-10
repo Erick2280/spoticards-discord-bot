@@ -72,7 +72,7 @@ export function createCardEmbed(card: Card, index: number = null) {
     };
     if (index != null) {
         embed['footer'] = {
-            text: card.used ?  `Card nº ${index + 1} do deck • **Já foi utilizada**` : `Card nº ${index + 1} do deck`
+            text: card.used ?  `Card nº ${index + 1} do deck • JÁ FOI UTILIZADA` : `Card nº ${index + 1} do deck`
         };
     }
     return embed;
