@@ -1,4 +1,4 @@
-import { Card } from './spoticard/game';
+import { Card } from './spoticards/game';
 import { User, Client } from 'discord.js';
 
 export function createCardEmbed(card: Card, index: number) {

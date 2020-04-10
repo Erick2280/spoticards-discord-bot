@@ -13,7 +13,7 @@ export type Criterion = {
     name: string,
     variableName: string,
     variableType: 'string' | 'number',
-    variableComparator: '>'| '<'
+    variableComparator: '>' | '<'
 };
 
 export type Card = {
