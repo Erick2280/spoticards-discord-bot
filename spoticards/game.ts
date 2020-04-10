@@ -86,4 +86,8 @@ export class Game {
         this.players.splice(playerIndex, 1);
     }
 
+    sortPlayersByPoints() {
+        this.players.sort((a, b) => b.points - a.points);
+    }
+
 }

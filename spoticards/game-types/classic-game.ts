@@ -203,12 +203,12 @@ export class ClassicGame extends Game {
     disposeCard(userName: string, cardIndex: number) {
 
         if (this.table.find(tableSpace => tableSpace.player.userName === userName)) {
-            throw new Error('PlayedAlreadyDisposedCardInThisRound');
+            throw new Error('PlayerAlreadyDisposedCardInThisRound');
         }
 
         const player = this.players.find(x => x.userName === userName);
         if (player === null) {
-            throw new Error('PlayerNotFoundInGame');
+            throw new Error('PlayerIsNotFound');
         }
 
         const card = player.deck[cardIndex];
@@ -222,7 +222,7 @@ export class ClassicGame extends Game {
             card
         };
         this.table.push(newTableSpace);
-        this.finishRound();
+        return this.finishRound();
     }
 
 }

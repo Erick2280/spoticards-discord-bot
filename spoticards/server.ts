@@ -35,7 +35,7 @@ export class Server {
     startGame(adminUserName: string, gameType: GameType, gameOptions: GameOptions) {
 
         if (this.findGameIdentifierByUser(adminUserName) != null) {
-            throw new Error('UserAlreadyInGame');
+            throw new Error('UserAlreadyInAGame');
         }
 
         let identifier: number;
@@ -49,6 +49,7 @@ export class Server {
             }
             const newGame = new ClassicGame(identifier, adminUserName, gameOptions.rounds, this.spotifyService, gameOptions.playlistId);
             this.runningGames.push(newGame);
+            this.addUserOnUsersList(adminUserName, newGame.identifier);
             return newGame;
         }
     }
@@ -78,7 +79,7 @@ export class Server {
         }
 
         if (this.findGameIdentifierByUser(userName) != null) {
-            throw new Error('PlayerAlreadyInAGame');
+            throw new Error('UserAlreadyInAGame');
         }
 
         targetGame.addPlayer(userName);
@@ -92,8 +93,13 @@ export class Server {
             throw new Error('UserNotFound');
         }
         const targetGame = this.findGameByIdentifier(identifier);
+        if (targetGame.adminUserName === userName) {
+            this.stopGame(targetGame.identifier, userName);
+            return true;
+        }
         targetGame.removePlayer(userName);
         this.removeUserFromUsersLists(userName);
+        return false;
     }
 
     findGameIdentifierByUser(userName: string) {

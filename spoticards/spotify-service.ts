@@ -69,7 +69,7 @@ export class SpotifyService {
                     valence: audioFeature.valence,
                     tempo: audioFeature.tempo,
                     duration: item.track.duration_ms / 1000,
-                    used: true
+                    used: false
                 });
             }
         } catch (error) {
