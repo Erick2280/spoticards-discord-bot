@@ -1,8 +1,8 @@
-import { Card, Game, TableSpace } from '../spoticards/game';
+import { Card, Game, Player } from '../spoticards/game';
 import { User, Client } from 'discord.js';
 import { ClassicGame } from '../spoticards/game-types/classic-game';
 
-export function createCardEmbed(card: Card, index: number) {
+export function createCardEmbed(card: Card, index: number = null) {
     const minutes = Math.floor(card.duration / 60);
     const seconds = Math.round(card.duration - minutes * 60);
     let leadingZero = '';
@@ -68,33 +68,46 @@ export function createCardEmbed(card: Card, index: number) {
                 value: `${minutes}:${leadingZero}${seconds} (${card.duration}s)`,
                 inline: true,
             }
-        ],
-        footer: {
-            text: card.used ?  `Card nº ${index} do deck • **Já foi utilizada**` : `Card nº ${index} do deck`
-        }
+        ]
     };
+    if (index != null) {
+        embed['footer'] = {
+            text: card.used ?  `Card nº ${index + 1} do deck • **Já foi utilizada**` : `Card nº ${index + 1} do deck`
+        };
+    }
     return embed;
 }
 
 export function createPlayersList(game: Game, leaderboardEnabled: boolean, client: Client) {
-    let message = `**${game.identifier} • Jogadores**`;
+    let message = leaderboardEnabled ? `**${game.identifier} • Ranking de jogadores**` : `**${game.identifier} • Jogadores**`;
     let index = 1;
     if (leaderboardEnabled) {
         game.sortPlayersByPoints();
         for (const player of game.players) {
-            message += `${index}º • **${getUserById(player.userName, client)}** • _${player.points} pontos_`;
+            message += `\n${index}º • **${getUserById(player.userName, client)}** • _${player.points} ${(player.points === 1) ? 'ponto' : 'pontos'}_`;
             index += 1;
         }
     } else {
         for (const player of game.players) {
-            message += `${index}. **${getUserById(player.userName, client)}**`;
+            message += `\n${index}. **${getUserById(player.userName, client)}**`;
             index += 1;
         }
     }
+    return message;
 }
 
-export function createGameTable(gameTable: TableSpace[], client: Client) {
-    return '';
+export function createGameTable(game: Game, roundFinishData, client: Client) {
+    let message = `**${game.identifier} • Mesa da rodada ${roundFinishData.round}**`;
+    if (game instanceof ClassicGame) {
+        message += `\nO critério da rodada foi: _${game.criteria[roundFinishData.selectedCriterion].name}_`;
+
+        let index = 1;
+        for (const tableSpace of roundFinishData.table) {
+            message += `\n${index}º • **${getUserById(tableSpace.player.userName, client)}** • _${tableSpace.card.name} - ${tableSpace.card.artist}_ • **${tableSpace.card[game.criteria[roundFinishData.selectedCriterion].variableName]}**`;
+            index++;
+        }
+    }
+    return message;
 }
 
 export function createRoundData(game: Game) {
@@ -106,7 +119,29 @@ export function createRoundData(game: Game) {
 }
 
 export function createWinningMessage(game: Game, client: Client) {
-    return '';
+    const winnerPoints = game.players[0].points;
+    const winnerPlayers: Player[] = [];
+
+    for (const player of game.players) {
+        if (player.points === winnerPoints) {
+            winnerPlayers.push(player);
+        } else {
+            break;
+        }
+    }
+
+    let message;
+
+    if (winnerPlayers.length === 1) {
+        message = `Parabéns ao vencedor, **${getUserById(winnerPlayers[0].userName, client)}**!`;
+    } else {
+        message = `Parabéns aos vencedores, empatados: `;
+        for (const winnerPlayer of winnerPlayers) {
+            message += `\n**${getUserById(winnerPlayer.userName, client)}**`;
+        }
+    }
+
+    return message;
 }
 
 export function createWarningFromDmMessage(user: User) {
@@ -131,11 +166,11 @@ export function extractRoundsFromString(string: string) {
 export function extractIndexFromString(string: string, length: number) {
     const index = parseInt(string, 10);
 
-	if (isNaN(index) || index < 0 || index >= length) {
+	if (isNaN(index) || index <= 0 || index > length) {
         throw new Error('IndexStringIsNotAValidNumber');
     }
 
-    return index;
+    return (index - 1);
 }
 
 export function extractGameIdentifierFromString(string: string) {

@@ -13,7 +13,7 @@ export function returnUserFriendlyErrorMessage(error: Error, message: Message, s
             message.reply('você já está nesse jogo.');
             break;
         case 'PlayerIsNotFound':
-            message.reply('voce não está nesse jogo. :/');
+            message.reply('você não está nesse jogo. :/');
             break;
         case 'UserAlreadyInAGame':
             message.reply('você já está em um jogo. Não dá pra participar de mais de um ao mesmo tempo :/');
@@ -63,6 +63,9 @@ export function returnUserFriendlyErrorMessage(error: Error, message: Message, s
             break;
         case 'IndexStringIsNotAValidNumber':
             message.reply('o número enviado é inválido.');
+            break;
+        case 'GameIsNotRunning':
+            message.reply('o jogo não está em andamento.');
             break;
         default:
             console.log(error);

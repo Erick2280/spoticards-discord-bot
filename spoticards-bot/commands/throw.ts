@@ -19,12 +19,15 @@ export function execute(message: Message, args: string[], server: Server, client
 
     if (targetGame instanceof ClassicGame) {
         const cardIndex = interfaceUtils.extractIndexFromString(args[0], targetGame.rounds);
-        const finishRoundReturn = targetGame.disposeCard(message.author.id, cardIndex);
-        message.reply(`, você jogou a sua carta ${cardIndex}.`);
-        if (finishRoundReturn != null) {
+        const roundFinishData = targetGame.disposeCard(message.author.id, cardIndex);
+        message.reply(`você jogou a sua carta ${cardIndex + 1}.`);
+        if (roundFinishData != null) {
             message.channel.send('Todos jogaram! Vamos ver os resultados?');
-            message.channel.send(interfaceUtils.createGameTable(finishRoundReturn, client));
+            message.channel.send('E a carta vencedora foi...');
+            message.channel.send({embed: interfaceUtils.createCardEmbed(roundFinishData.table[0].card)});
+            message.channel.send(interfaceUtils.createGameTable(targetGame, roundFinishData, client));
             message.channel.send(interfaceUtils.createPlayersList(targetGame, true, client));
+            message.channel.send(interfaceUtils.createRoundData(targetGame));
 
             if (!targetGame.gameIsRunning) {
                 message.channel.send('E o jogo chega ao fim!');

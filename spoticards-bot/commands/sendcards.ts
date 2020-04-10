@@ -19,10 +19,9 @@ export function execute(message: Message, args: string[], server: Server, client
     if (targetGame instanceof ClassicGame) {
 
         message.reply('enviei suas cartas nas sua DM.');
-        // # todo, enviar título antes de spammar cartas
-        // # todo, ver índice das cartas throw
         let index = 0;
         const targetPlayer = targetGame.players.find(player => player.userName === message.author.id);
+        message.author.send(`Estas são as suas cartas do jogo ${targetGame.identifier}:`);
         for (const card of targetPlayer.deck) {
             message.author.send({embed: interfaceUtils.createCardEmbed(card, index)});
             index += 1;

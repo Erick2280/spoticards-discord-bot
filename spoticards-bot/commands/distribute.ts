@@ -23,6 +23,7 @@ export async function execute(message: Message, args: string[], server: Server, 
         await targetGame.distributeDeck();
         for (const player of targetGame.players) {
             const user = interfaceUtils.getUserById(player.userName, client);
+            user.send(`Estas são as suas cartas do jogo ${targetGame.identifier}:`);
             let index = 0;
             for (const card of player.deck) {
                 user.send({embed: interfaceUtils.createCardEmbed(card, index)});

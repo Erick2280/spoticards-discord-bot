@@ -79,7 +79,7 @@ export class Game {
         }
 
         const playerIndex = this.players.findIndex(player => player.userName === userName);
-        if (playerIndex !== -1) {
+        if (playerIndex === -1) {
             throw new Error('PlayerIsNotFound');
         }
 

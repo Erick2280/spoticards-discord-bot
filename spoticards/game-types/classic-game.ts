@@ -139,7 +139,7 @@ export class ClassicGame extends Game {
         this.table = [];
 
         // Define um critério
-        this.selectedCriterion = generateRandomInteger(0, this.criteria.length);
+        this.selectedCriterion = generateRandomInteger(0, this.criteria.length - 1);
     }
 
     finishRound() {
@@ -187,20 +187,27 @@ export class ClassicGame extends Game {
             }
         }
 
-        const finishedTable = this.table;
+        const roundFinishData = {
+            round: this.round,
+            selectedCriterion: this.selectedCriterion,
+            table: this.table,
+        };
 
         // Continua o jogo se não for a úlitma rodada.
-        if (this.round > this.rounds) {
-            this.round++;
+        if (this.round < this.rounds) {
             this.runRound();
         } else {
             this.gameIsRunning = false;
         }
-        return finishedTable;
+        return roundFinishData;
 
     }
 
     disposeCard(userName: string, cardIndex: number) {
+
+        if (!this.gameIsRunning || this.deckIsBeingMounted) {
+            throw new Error('GameIsNotRunning');
+        }
 
         if (this.table.find(tableSpace => tableSpace.player.userName === userName)) {
             throw new Error('PlayerAlreadyDisposedCardInThisRound');
