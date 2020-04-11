@@ -60,7 +60,7 @@ export function returnUserFriendlyErrorMessage(error: Error, message: Message, s
             message.reply('você já jogou uma carta na mesa nessa rodada. Espere até a próxima :)');
             break;
         case 'PlayerCardAlreadyUsed':
-            message.reply(`você já jogou essa carta. Jogue uma que não tenha jogado antes :) Para ver suas cartas na mão, envie **${environment.botPrefix}sendcard filterused**`);
+            message.reply(`você já jogou essa carta. Jogue uma que não tenha jogado antes :) Para ver suas cartas na mão, envie **${environment.botPrefix}sendcards used**`);
             break;
         case 'SpotifyPlaylistStringNotProvided':
             message.reply('parece que você não inseriu nenhuma playlist :/');

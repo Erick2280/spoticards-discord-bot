@@ -6,6 +6,7 @@ import { environment } from '../../temp/environment';
 
 export const data = {
     name: 'distribute',
+    aliases: ['redistribute'],
     description: 'Distribui as cartas do jogo e inicia-o.',
     args: false
 };

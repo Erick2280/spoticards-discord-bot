@@ -8,7 +8,7 @@ export const data = {
     aliases: ['sendmydeck', 'mydeck', 'mycards'],
     description: 'Envia as suas cartas para sua DM.',
     args: false,
-    usage: '<filterused (opcional caso queira filtrar as cartas utilizadas)>'
+    usage: '<used (opcional caso queira filtrar as cartas utilizadas)>'
 };
 
 export function execute(message: Message, args: string[], server: Server, client) {
@@ -21,11 +21,11 @@ export function execute(message: Message, args: string[], server: Server, client
     if (targetGame instanceof ClassicGame) {
 
         let filterUsed = false;
-        if (args[0] != null && args[0] === 'filterused') {
+        if (args[0] != null && args[0] === 'used') {
             filterUsed = true;
         }
 
-        message.reply('enviei suas cartas nas sua DM.');
+        message.reply('enviei suas cartas na sua DM.');
         let index = 0;
         const targetPlayer = targetGame.players.find(player => player.userName === message.author.id);
         message.author.send(`Estas são as suas cartas do jogo ${targetGame.identifier}:`);

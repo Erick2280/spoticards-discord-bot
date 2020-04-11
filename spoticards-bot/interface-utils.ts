@@ -111,7 +111,7 @@ export function createGameTable(game: Game, roundFinishData, client: Client) {
 }
 
 export function createRoundData(game: Game) {
-    let message = `**${game.identifier} • Round ${game.round}/${game.rounds}**`;
+    let message = `**${game.identifier} • Rodada ${game.round}/${game.rounds}**`;
     if (game instanceof ClassicGame) {
         message += `\nO critério da rodada é: _${game.criteria[game.selectedCriterion].name}_`;
     }

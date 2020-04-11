@@ -36,13 +36,13 @@ export class ClassicGame extends Game {
         },
         {
             name: 'Álbum com maior nome',
-            variableName: 'artist',
+            variableName: 'album',
             variableType: 'string',
             variableComparator: '>'
         },
         {
             name: 'Álbum com menor nome',
-            variableName: 'artist',
+            variableName: 'album',
             variableType: 'string',
             variableComparator: '<'
         },
@@ -199,6 +199,7 @@ export class ClassicGame extends Game {
             this.runRound();
         } else {
             this.gameIsRunning = false;
+            this.round = 0;
         }
         return roundFinishData;
 

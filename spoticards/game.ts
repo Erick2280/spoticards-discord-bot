@@ -13,7 +13,7 @@ export type Criterion = {
     name: string,
     variableName: string,
     variableType: 'string' | 'number',
-    variableComparator: '>' | '<'
+    variableComparator: '>' | '<' | '.'
 };
 
 export type Card = {
@@ -119,13 +119,13 @@ export const allCriteria: Criterion[] = [{
     },
     {
         name: 'Álbum com maior nome',
-        variableName: 'artist',
+        variableName: 'album',
         variableType: 'string',
         variableComparator: '>'
     },
     {
         name: 'Álbum com menor nome',
-        variableName: 'artist',
+        variableName: 'album',
         variableType: 'string',
         variableComparator: '<'
     },

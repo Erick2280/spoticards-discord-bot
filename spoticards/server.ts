@@ -4,9 +4,10 @@ import { Game, Criterion } from './game';
 import { ClassicGame } from './game-types/classic-game';
 import { ThoroughGame } from './game-types/thorough-game';
 import { CustomCriteriaGame } from './game-types/custom-criteria-game';
-// import { CustomDeckGame } from './game-types/custom-deck-game';
-// import { SelectACriteriaGame } from './game-types/select-a-criteria-game';
 // import { RightInTheMiddleGame } from './game-types/right-in-the-middle-game';
+// mão gorda
+// import { CustomDeckGame } from './game-types/custom-deck-game';
+// import { SelectTheCriteriaGame } from './game-types/select-the-criteria-game';
 // import { ChooseTheCards } from './game-types/right-in-the-middle-game';
 
 import { generateRandomInteger } from './utils';
