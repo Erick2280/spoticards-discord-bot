@@ -22,6 +22,18 @@ export function returnUserFriendlyErrorMessage(error: Error, message: Message, s
         case 'MissingPlaylistId':
             message.reply('você esqueceu de colocar a playlist :/');
             break;
+        case 'MissingCriteria':
+            message.reply('você esqueceu de colocar os critérios :/ Você vai precisar criar a sala de novo.');
+            break;
+        case 'MalformedCriteria':
+            message.reply('você digitou os critérios corretamente? Eles são especificados pelo número e separados por vírgula. Você vai precisar criar a sala de novo.');
+            break;
+        case 'NewCommandAbortedGameCreation':
+            message.reply('você enviou um novo comando, por isso cancelei a criação do jogo.');
+            break;
+        case 'NoReplyAbortedGameCreation':
+            message.reply('você não selecionou os critérios a tempo, por isso cancelei a criação do jogo.');
+            break;
         case 'GameNotFound':
             message.reply('não foi possível encontrar um jogo com esse identificador. Tem certeza que está certo?');
             break;

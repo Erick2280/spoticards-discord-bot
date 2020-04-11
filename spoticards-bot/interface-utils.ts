@@ -1,4 +1,4 @@
-import { Card, Game, Player } from '../spoticards/game';
+import { Card, Game, Player, allCriteria } from '../spoticards/game';
 import { User, Client } from 'discord.js';
 import { ClassicGame } from '../spoticards/game-types/classic-game';
 
@@ -144,6 +144,16 @@ export function createWinningMessage(game: Game, client: Client) {
     return message;
 }
 
+export function createAvailableCriteriaList() {
+    let message = '**Critérios disponíveis**';
+    let index = 1;
+    for (const criteria of allCriteria) {
+        message += `\n${index}. _${criteria.name}_`;
+        index += 1;
+    }
+    return message;
+}
+
 export function createWarningFromDmMessage(user: User) {
     return `**Oi, ${user}! Aqui é o robô do Spoticards!** \n Só posso ser utilizado em canais de texto de servidores. Eu vou mandar informações privadas (como seu deck numa partida) por aqui, mas você me comanda lá pelo canal onde você está jogando :)`;
 
@@ -181,6 +191,22 @@ export function extractGameIdentifierFromString(string: string) {
     }
 
     return identifier;
+}
+
+export function extractCriteriaFromString(string: string) {
+    const criteriaIndexes = string.replace(/, +/g, ',').split(',').map(Number);
+
+    if (criteriaIndexes == null || criteriaIndexes.length === 0 ||
+        criteriaIndexes.find(x => isNaN(x) || x <= 0 || x > allCriteria.length) != null) {
+        throw new Error('MalformedCriteria');
+    }
+
+    const selectedCriteria = [];
+    for (const criterionIndex of criteriaIndexes) {
+        selectedCriteria.push(allCriteria[criterionIndex - 1]);
+    }
+    return selectedCriteria;
+
 }
 
 export function getSpotifyPlaylistLinkFromId(playlistId: string) {

@@ -1,11 +1,13 @@
 import { SpotifyService } from './spotify-service';
 
-import { Game } from './game';
+import { Game, Criterion } from './game';
 import { ClassicGame } from './game-types/classic-game';
 import { ThoroughGame } from './game-types/thorough-game';
+import { CustomCriteriaGame } from './game-types/custom-criteria-game';
 // import { CustomDeckGame } from './game-types/custom-deck-game';
 // import { SelectACriteriaGame } from './game-types/select-a-criteria-game';
 // import { RightInTheMiddleGame } from './game-types/right-in-the-middle-game';
+// import { ChooseTheCards } from './game-types/right-in-the-middle-game';
 
 import { generateRandomInteger } from './utils';
 
@@ -16,10 +18,11 @@ type User = {
 
 export type GameOptions = {
     playlistId?: string,
-    rounds: number
+    rounds: number,
+    criteria?: Criterion[]
 };
 
-export enum GameType { Classic, Thorough, CustomDeck }
+export enum GameType { Classic, Thorough, CustomCriteria }
 
 export class Server {
     runningGames: Game[];
@@ -57,6 +60,19 @@ export class Server {
                 throw new Error('MissingPlaylistId');
             }
             const newGame = new ThoroughGame(identifier, adminUserName, gameOptions.rounds, this.spotifyService, gameOptions.playlistId);
+            this.runningGames.push(newGame);
+            this.addUserOnUsersList(adminUserName, newGame.identifier);
+            return newGame;
+        }
+        if (gameType === GameType.CustomCriteria) {
+            if (!('playlistId' in gameOptions)) {
+                throw new Error('MissingPlaylistId');
+            }
+            if (!('criteria' in gameOptions)) {
+                throw new Error('MissingCriteria');
+            }
+            const newGame = new CustomCriteriaGame(identifier, adminUserName, gameOptions.rounds,
+                this.spotifyService, gameOptions.playlistId, gameOptions.criteria);
             this.runningGames.push(newGame);
             this.addUserOnUsersList(adminUserName, newGame.identifier);
             return newGame;

@@ -21,7 +21,8 @@ export function execute(message: Message, args: string[], server: Server, client
     if (targetGame instanceof ClassicGame) {
         const cardIndex = interfaceUtils.extractIndexFromString(args[0], targetGame.rounds);
         const roundFinishData = targetGame.disposeCard(message.author.id, cardIndex);
-        message.reply(`você jogou a sua carta ${cardIndex + 1}.`);
+        // message.reply(`você jogou a sua carta ${cardIndex + 1}.`);
+        message.react('👍');
         if (roundFinishData != null) {
             message.channel.send('Todos jogaram! Vamos ver os resultados?');
             message.channel.send('E a carta vencedora foi...');

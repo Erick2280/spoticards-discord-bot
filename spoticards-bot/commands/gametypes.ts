@@ -17,6 +17,10 @@ _Clássico_
 
 _Minucioso_
 **${environment.botPrefix}create thorough <rodadas> <playlist>**
-• É o Spoticards clássico com mais critérios. A playlist passada servirá como deck de cartas. As cartas serão distribuídas aleatoriamente entre os participantes. Os critérios da rodada serão selecionados aleatoriamente, dentre todos disponíveis.`;
+• É o Spoticards clássico com mais critérios. A playlist passada servirá como deck de cartas. As cartas serão distribuídas aleatoriamente entre os participantes. Os critérios da rodada serão selecionados aleatoriamente, dentre todos disponíveis.
+
+_Critérios Personalizados_
+**${environment.botPrefix}create customcriteria <rodadas> <playlist>**
+• Neste tipo de jogo, o anfitrião escolhe os critérios antes de começar. A playlist passada servirá como deck de cartas. As cartas serão distribuídas aleatoriamente entre os participantes.`;
     message.channel.send(messageText);
 }

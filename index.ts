@@ -26,12 +26,18 @@ client.once('ready', () => {
 
 client.on('message', async message => {
     if (message.channel instanceof Discord.DMChannel && !message.author.bot) {
+        // TODO: atualizar para permitir certos comandos na dm
+        // TODO: criar consulta de carta
         message.channel.send(interfaceUtils.createWarningFromDmMessage(message.author));
     }
 
     if (message.channel instanceof Discord.TextChannel && message.content.startsWith(environment.botPrefix) && !message.author.bot) {
         const args: string[] = message.content.slice(environment.botPrefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
+
+        if (commandName === 'reply') {
+            return;
+        }
 
         const command = commands.get(commandName) ||
                         commands.find(cmd => cmd.data.aliases && cmd.data.aliases.includes(commandName));

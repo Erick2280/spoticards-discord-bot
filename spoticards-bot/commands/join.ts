@@ -6,6 +6,7 @@ import { environment } from '../../temp/environment';
 export const data = {
     name: 'join',
     description: 'Adiciona o usuário a um jogo existente.',
+    aliases: ['joingame', 'entergame'],
     args: true,
     usage: '<identificador>'
 };
